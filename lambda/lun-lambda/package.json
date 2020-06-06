@@ -1,0 +1,18 @@
+{
+  "name": "lun",
+  "version": "0.0.1",
+  "description": "A serverless comment system based on AWS",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "markdown-it": "^11.0.0",
+    "markdown-it-highlight": "^0.2.0",
+    "markdown-it-highlightjs": "^3.1.0",
+    "markdown-it-katex": "^2.0.3"
+  },
+  "devDependencies": {}
+}

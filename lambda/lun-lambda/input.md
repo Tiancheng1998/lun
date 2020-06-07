@@ -12,6 +12,6 @@ print("hello world")
 中文支持：
 - 鬣
 
-<ul class="test">
-<li>hello</li>
-</ul>
+### Avoid DOM-Based XSS Attack!
+
+<img src=1 onerror='console.log("xss")'>

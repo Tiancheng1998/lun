@@ -1,5 +1,5 @@
 {
-  "name": "lun",
+  "name": "lun-lambda",
   "version": "0.0.1",
   "description": "A serverless comment system based on AWS",
   "main": "index.js",
@@ -7,10 +7,11 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
-  "license": "ISC",
+  "license": "MIT",
   "dependencies": {
+    "dompurify": "^2.0.11",
+    "jsdom": "^16.2.2",
     "markdown-it": "^11.0.0",
-    "markdown-it-highlight": "^0.2.0",
     "markdown-it-highlightjs": "^3.1.0",
     "markdown-it-katex": "^2.0.3"
   },

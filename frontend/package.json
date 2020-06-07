@@ -1,0 +1,28 @@
+{
+  "name": "lun",
+  "version": "0.0.1",
+  "description": "A serverless comment system based on AWS",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/6etacat/lun.git"
+  },
+  "keywords": [
+    "comment",
+    "serverless",
+    "aws"
+  ],
+  "author": "Michael Mao",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/6etacat/lun/issues"
+  },
+  "homepage": "https://github.com/6etacat/lun#readme",
+  "dependencies": {
+    "aws-sdk": "^2.691.0",
+    "webpack": "^4.43.0"
+  }
+}

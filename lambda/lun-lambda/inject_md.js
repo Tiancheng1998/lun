@@ -9,8 +9,7 @@ function httpGetAsync(url, callback) {
 }
 
 function callback(responseText) {
-    document.getElementById('lun').innerHTML += "\n<link rel='stylesheet' href='//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.0.3/styles/github.min.css'>\n\
-    <script src='//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.0.3/highlight.min.js' crossorigin='anonymous'></script>\n\
+    document.getElementById('lun').innerHTML += "\n<link rel='stylesheet' href='//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.0.3/styles/github.min.css'>\
     <link rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.5.1/katex.min.css'>"
     document.getElementById('comment').innerHTML = responseText
 }

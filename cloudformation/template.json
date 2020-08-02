@@ -1,0 +1,306 @@
+{
+    "AWSTemplateFormatVersion" : "2010-09-09",
+   
+    "Description" : "The cloudforamtion template automates the setup of backend services for Lun - an AWS based module for integrating blog-style comments",
+   
+    "Parameters" : {
+      "HashKeyElementName" : {
+        "Description" : "HashType PrimaryKey Name",
+        "Type" : "String",
+        "AllowedPattern" : "[a-zA-Z0-9]*",
+        "MinLength": "1",
+        "MaxLength": "2048",
+        "ConstraintDescription" : "must contain only alphanumberic characters"
+      },
+  
+      "HashKeyElementType" : {
+        "Description" : "HashType PrimaryKey Type",
+        "Type" : "String",
+        "Default" : "S",
+        "AllowedPattern" : "[S|N]",
+        "MinLength": "1",
+        "MaxLength": "1",
+        "ConstraintDescription" : "must be either S or N"
+      },
+  
+      "ReadCapacityUnits" : {
+        "Description" : "Provisioned read throughput, defaults to free tier capacity",
+        "Type" : "Number",
+        "Default" : "25",
+        "MinValue": "5",
+        "MaxValue": "10000",
+        "ConstraintDescription" : "must be between 5 and 10000"
+      },
+  
+      "WriteCapacityUnits" : {
+        "Description" : "Provisioned write throughput, defaults to max free tier capacity",
+        "Type" : "Number",
+        "Default" : "25",
+        "MinValue": "5",
+        "MaxValue": "10000",
+        "ConstraintDescription" : "must be between 5 and 10000"
+      }
+    },
+   
+    "Resources" : {
+      "metaDataTable" : {
+        "Type" : "AWS::DynamoDB::Table",
+        "Properties" : {
+          "TableName": "RawComments",
+          "AttributeDefinitions": [ 
+            { 
+              "AttributeName" : "blogID",
+              "AttributeType" : "S"
+            }, 
+            {
+              "AttributeName": "commentID-replyID",
+              "AttributeType":  "S"
+            }, 
+            {
+              "AttributeName": "author",
+              "AttributeType": "S"
+            }, 
+            {
+              "AttributeName": "mentionedID",
+              "AttributeType": "S"
+            },
+            {
+              "AttributeName": "createTime",
+              "AttributeType": "S"
+            }, 
+            {
+              "AttributeName": "editTime",
+              "AttributeType": "S"
+            }, 
+            {
+              "AttributeName": "upVotes",
+              "AttributeType": "S"
+            }
+          ],
+
+          "KeySchema": [
+            { "AttributeName": "blogID", "KeyType": "HASH" },
+            { "AttributeName": "commentID-replyID", "KeyType": "RANGE"}
+          ],
+          "ProvisionedThroughput" : {
+            "ReadCapacityUnits" : {"Ref" : "ReadCapacityUnits"},
+            "WriteCapacityUnits" : {"Ref" : "WriteCapacityUnits"}
+          },
+          "StreamSpecification": {
+            "StreamViewType": "NEW_IMAGE"
+          }
+        }
+      },
+
+      "rawCommentTable" : {
+        "Type" : "AWS::DynamoDB::Table",
+        "Properties" : {
+          "TableName": "RenderedComments",
+          "AttributeDefinitions": [ 
+            { 
+              "AttributeName" : "blogID",
+              "AttributeType" : "S"
+            }, 
+            {
+              "AttributeName": "commentID-replyID",
+              "AttributeType":  "S"
+            }, 
+            {
+              "AttributeName": "author",
+              "AttributeType": "S"
+            }, 
+            {
+              "AttributeName": "createTime",
+              "AttributeType": "S"
+            }, 
+            {
+              "AttributeName": "mentionedID",
+              "AttributeType": "S"
+            },
+            {
+              "AttributeName": "editTime",
+              "AttributeType": "S"
+            }, 
+            {
+              "AttributeName": "rawContent",
+              "AttributeType": "S"
+            }
+          ],
+
+          "KeySchema": [
+            { "AttributeName": "blogID", "KeyType": "HASH" },
+            { "AttributeName": "commentID-replyID", "KeyType": "RANGE"}
+          ],
+          "ProvisionedThroughput" : {
+            "ReadCapacityUnits" : {"Ref" : "ReadCapacityUnits"},
+            "WriteCapacityUnits" : {"Ref" : "WriteCapacityUnits"}
+          }
+        }
+      },
+
+      "renderedCommentTable" : {
+        "Type" : "AWS::DynamoDB::Table",
+        "Properties" : {
+          "TableName": "RenderedComments",
+          "AttributeDefinitions": [ 
+            { 
+              "AttributeName" : "blogID",
+              "AttributeType" : "S"
+            }, 
+            {
+              "AttributeName": "commentID-replyID",
+              "AttributeType":  "S"
+            }, 
+            {
+              "AttributeName": "author",
+              "AttributeType": "S"
+            }, 
+            {
+              "AttributeName": "createTime",
+              "AttributeType": "S"
+            }, 
+            {
+              "AttributeName": "editTime",
+              "AttributeType": "S"
+            }, 
+            {
+              "AttributeName": "mentionedID",
+              "AttributeType": "S"
+            },
+            {
+              "AttributeName": "renderedContent",
+              "AttributeType": "S"
+            }
+          ],
+
+          "KeySchema": [
+            { "AttributeName": "blogID", "KeyType": "HASH" },
+            { "AttributeName": "commentID-replyID", "KeyType": "RANGE"}
+          ],
+          "ProvisionedThroughput" : {
+            "ReadCapacityUnits" : {"Ref" : "ReadCapacityUnits"},
+            "WriteCapacityUnits" : {"Ref" : "WriteCapacityUnits"}
+          }
+        }
+      },
+
+      "myLogGroup": {
+        "Type": "AWS::Logs::LogGroup",
+        "Properties": {
+            "RetentionInDays": 7
+        }
+    },
+
+      "lambdaFunction" : {
+        "Type" : "AWS::Lambda::Function",
+        "Properties" : {
+          "Code" : Code,
+          "Description" : "renders md to katex",
+          "Environment" : Environment,
+          "FunctionName" : String,
+          "Handler" : String,
+          "KmsKeyArn" : String,
+          "Layers" : [ String, ... ],
+          "MemorySize" : Integer,
+          "ReservedConcurrentExecutions" : Integer,
+          "Role" : {
+            "Fn::GetAtt": [
+              "lambdaRole",
+              "Arn"
+            ]
+          },
+          "Runtime" : "nodejs12.x",
+          "Tags" : [ Tag, ... ],
+          "Timeout" : Integer,
+          "TracingConfig" : TracingConfig,
+          "VpcConfig" : VpcConfig
+        }
+      },
+
+      "lambdaRole" : {
+        "Type" : "AWS::IAM::Role",
+        "Properties" : {
+          "AssumeRolePolicyDocument" : {
+            "Version": "2012-10-17",
+            "Statement": [
+              {
+                "Effect": "Allow",
+                "Principal": {
+                  "Service": "lambda.amazonaws.com"
+                },
+                "Action": "sts:AssumeRole"
+              }
+            ]
+          },
+          "Description" : "lambda role for accessing the stream of raw markdown table, rendered table and sns",
+          "Path" : "/comment-lambda-role/",
+          "RoleName" : "CommentLambdaRole",
+          "Policies" : [
+            {
+              "PolicyName": "LambdaAccess",
+              "PolicyDocument": {
+                "Version": "2012-10-17",
+                "Statement": [
+                  {
+                    "Effect": "Allow",
+                    "Action": "lambda:InvokeFunction",
+                    "Resource": "REPLACE WITH lambda resource arn"
+                  },
+                  {
+                    "Effect": "Allow",
+                    "Action": [
+                      "dynamodb:DescribeStream",
+                      "dynamodb:GetRecords",
+                      "dynamodb:GetShardIterator",
+                      "dynamodb:ListStreams"
+                    ],
+                    "Resource": {
+                      "Fn::GetAtt": [
+                        "rawCommentTable",
+                        "StreamArn"
+                      ]
+                    }
+                  },
+                  {
+                    "Effect": "Allow",
+                    "Action": [
+                        "logs:CreateLogGroup",
+                        "logs:CreateLogStream",
+                        "logs:PutLogEvents"
+                    ],
+                    "Resource": {
+                      "Fn::GetAtt": [
+                        "myLogGroup",
+                        "Arn"
+                      ]
+                    }
+                  },
+                  {
+                    "Effect": "Allow",
+                    "Action": [
+                      "dynamodb:UpdateItem",
+                      "dynamodb:PutItem"
+                    ],
+                    "Resource": {
+                      "Fn::GetAtt": [
+                        "renderedCommentTable",
+                        "Arn"
+                      ]
+                    }
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      }
+    },
+   
+    "Outputs" : {
+      "TableName" : {
+        "Value" : {"Ref" : "myDynamoDBTable"},
+        "Description" : "Table name of the newly created DynamoDB table"
+      }
+    }
+  }
+  

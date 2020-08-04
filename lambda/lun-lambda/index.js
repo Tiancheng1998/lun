@@ -10,7 +10,8 @@ const markdownIt = require('markdown-it')()
 const window = new JSDOM('').window;
 const DOMPurify = createDOMPurify(window);
 
-const input = fs.readFileSync('./input.md', {encoding:'utf8', flag:'r'});
+// const input = fs.readFileSync('./input.md', {encoding:'utf8', flag:'r'});
+const input = "UUID1830G1666989095"
 
 markdownIt.set({
     html: true,

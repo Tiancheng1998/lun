@@ -24,13 +24,13 @@ const params = {
         S: "1"
      },
      "commentID-replyID": {
-       S: "1-0"
+       S: "1-2"
       }, 
      "author": {
-       S: "Tony"
+       S: "Michael"
       },
       "mentionedID": {
-        S: "mmln"
+        S: "Tony"
       },
       "createTime": {
         S: "10:00"
@@ -39,7 +39,7 @@ const params = {
         S: "12:00"
       },
       "content": {
-        S: input
+        S: "Fourier Transform"
       }
     }, 
     ReturnConsumedCapacity: "TOTAL", 

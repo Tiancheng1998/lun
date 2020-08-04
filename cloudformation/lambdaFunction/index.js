@@ -38,22 +38,22 @@ exports.handler = (event, context, callback) => {
         const params = {
             Item: {
              "blogID": {
-                S: "1"
+                S: record.dynamodb.Keys.blogID.S
              },
              "commentID-replyID": {
-               S: "1-0"
+               S: record.dynamodb.Keys["commentID-replyID"].S
               }, 
              "author": {
-               S: "Tony"
+               S: record.dynamodb.NewImage.author.S
               },
               "mentionedID": {
-                S: "mmln"
+                S: record.dynamodb.NewImage.mentionedID.S
               },
               "createTime": {
-                S: "10:00"
+                S: record.dynamodb.NewImage.createTime.S
               },
               "editTime": {
-                S: "12:00"
+                S: record.dynamodb.NewImage.editTime.S
               },
               "content": {
                 S: result

@@ -12,7 +12,7 @@ const dynamodb = new AWS.DynamoDB({apiVersion: '2012-08-10'});
 const window = new JSDOM('').window;
 const DOMPurify = createDOMPurify(window);
 
-exports.handler = (event, context, callback) => {
+exports.handler = async(event, context) => {
     console.log('Received event:', JSON.stringify(event, null, 2));
     for (const record of event.Records) {
         
@@ -20,8 +20,40 @@ exports.handler = (event, context, callback) => {
         console.log(record.eventName);
         console.log('DynamoDB Record: %j', record.dynamodb);
         
+        // update metatable
+        const paramsForMetaData = {
+            Item: {
+             "blogID": {
+                S: record.dynamodb.Keys.blogID.S
+             },
+             "commentID-replyID": {
+               S: record.dynamodb.Keys["commentID-replyID"].S
+              }, 
+             "author": {
+               S: record.dynamodb.NewImage.author.S
+              },
+              "replyTo": {
+                S: record.dynamodb.NewImage.replyTo.S
+              },
+              "createTime": {
+                S: record.dynamodb.NewImage.createTime.S
+              },
+              "editTime": {
+                S: record.dynamodb.NewImage.editTime.S
+              }
+            }, 
+            ReturnConsumedCapacity: "TOTAL", 
+            TableName: "MetaData"
+        };
+        try {
+            await dynamodb.putItem(paramsForMetaData).promise()
+        } catch (e) {
+            throw e
+        }
+
+
+        // process and store in rendered table
         const input = record.dynamodb.NewImage.content.S
-        console.log(input)
         
         markdownIt.set({
             html: true,
@@ -46,8 +78,8 @@ exports.handler = (event, context, callback) => {
              "author": {
                S: record.dynamodb.NewImage.author.S
               },
-              "mentionedID": {
-                S: record.dynamodb.NewImage.mentionedID.S
+              "replyTo": {
+                S: record.dynamodb.NewImage.replyTo.S
               },
               "createTime": {
                 S: record.dynamodb.NewImage.createTime.S
@@ -62,16 +94,11 @@ exports.handler = (event, context, callback) => {
             ReturnConsumedCapacity: "TOTAL", 
             TableName: "RenderedComments"
         };
-        dynamodb.putItem(params, (err, data) => {
-            callback(err, null)
-        })
-        
-        // try {
-        //   await dynamodb.putItem(params).promise()
-        // } catch (e) {
-        //   console.log(e.message)
-        // }
+         
+        try {
+          await dynamodb.putItem(params).promise()
+        } catch (e) {
+          throw e
+        }
     }
-    // return `Successfully processed ${event.Records.length} records.`;
-    // return context.logStreamName
 };

@@ -29,8 +29,8 @@ const params = {
      "author": {
        S: "Michael"
       },
-      "mentionedID": {
-        S: "Tony"
+      "replyTo": {
+        S: "1-0"
       },
       "createTime": {
         S: "10:00"
@@ -39,7 +39,7 @@ const params = {
         S: "12:00"
       },
       "content": {
-        S: "Fourier Transform"
+        S: "Fourier Transform 345"
       }
     }, 
     ReturnConsumedCapacity: "TOTAL", 
